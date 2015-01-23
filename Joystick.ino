@@ -1,56 +1,71 @@
 JoyState_t joySt;
+const int gTrigger = 0;
+
+// Input pins
+const int inPin0 = 0;
+const int inPin1 = 1;
+const int inPin2 = 2;
+const int inPin3 = 3;
+const int inPin4 = 4;
+const int inPin5 = 5;
+const int inPin6 = 6;
+const int inPin7 = 7;
+
+// Output pins
+const int outPin0 = 8;
+const int outPin1 = 9;
+const int outPin2 = 10;
+const int outPin3 = 11;
+
+// LED
+const int ledPin = 13;
 
 void setup()
 {
-  pinMode(13, OUTPUT);
-  joySt.xAxis = 0;
-  joySt.yAxis = 0;
-  joySt.zAxis = 0;
-  joySt.xRotAxis = 0;
-  joySt.yRotAxis = 0;
-  joySt.zRotAxis = 0;
-  joySt.throttle = 0;
-  joySt.rudder = 0;
-  joySt.hatSw1 = 0;
-  joySt.hatSw2 = 0;
+  pinMode(inPin0, INPUT);
+  pinMode(inPin1, INPUT);
+  pinMode(inPin2, INPUT);
+  pinMode(inPin3, INPUT);
+  pinMode(inPin4, INPUT);
+  pinMode(inPin5, INPUT);
+  pinMode(inPin6, INPUT);
+  pinMode(inPin7, INPUT);
+
+  pinMode(outPin0, OUTPUT);
+  pinMode(outPin1, OUTPUT);
+  pinMode(outPin2, OUTPUT);
+  pinMode(outPin3, OUTPUT);
+
+  pinMode(ledPin, OUTPUT);
+
   joySt.buttons = 0;
+}
+
+void buttonBits(int id, int input) {
+  if (digitalRead(input) > gTrigger) {
+    joySt.buttons |= 1 << id;
+  } 
+  else {
+    joySt.buttons ^= 1 << id;
+  }
 }
 
 void loop()
 {
-  joySt.xAxis = random(255);
-  joySt.yAxis = random(255);
-  joySt.zAxis = random(255);
-  joySt.xRotAxis = random(255);
-  joySt.yRotAxis = random(255);
-  joySt.zRotAxis = random(255);
-  //joySt.throttle = random(255);
-  joySt.rudder = random(255);
+  buttonBits(0, inPin0);
+  buttonBits(1, inPin1);
+  buttonBits(2, inPin2);
+  buttonBits(3, inPin3);
+  buttonBits(4, inPin4);
+  buttonBits(5, inPin5);
+  buttonBits(6, inPin6);
+  buttonBits(7, inPin7);
 
-  joySt.throttle++;
-
-
-  joySt.buttons <<= 1;
-  if (joySt.buttons == 0)
-    joySt.buttons = 1;
-
-  joySt.hatSw1++;
-  joySt.hatSw2--;
-
-  if (joySt.hatSw1 > 8)
-    joySt.hatSw1 = 0;
-  if (joySt.hatSw2 > 8)
-    joySt.hatSw2 = 8;
-
-  delay(100);
-
-  if (joySt.throttle > 127)
-    digitalWrite(13, HIGH);
-  else
-    digitalWrite(13, LOW);
+  delay(10);
 
   // Call Joystick.move
   Joystick.setState(&joySt);
 }
+
 
 
